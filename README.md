@@ -1,7 +1,6 @@
 # Testify
 
-**Testify** is a full-stack online testing platform designed to help educators conduct fair and focused assessments. The platform enforces strict test-taking rules such as preventing copy-paste actions, tab switching, and limiting suspicious behavior to ensure test integrity. All tests are MCQ-based, and results are shared instantly with users via email.
-
+**Testify** is a full-stack online testing platform that helps educators create and manage multiple tests. It prevents copy-paste and tab switching during exams and sends results instantly to users via email.
 ---
 
 ## Project Overview
