@@ -1,6 +1,7 @@
 # Testify
 
-**Testify** is a full-stack online testing platform that helps educators create and manage multiple tests.It prevents copy-paste and tab switching during exams and sends results instantly to users via email.
+Testify is a full-stack online testing platform that helps educators create and manage multiple tests. It prevents copy-paste and tab switching during exams and sends results instantly to users via email.
+
 ---
 
 ## Project Overview
@@ -10,8 +11,8 @@ Testify allows administrators to create and manage multiple tests through an adm
 ---
 
 ## Live Demo
-Live URL: [Not deployed yet.]
 
+Live URL: Not deployed yet.
 
 ---
 
@@ -37,9 +38,9 @@ Live URL: [Not deployed yet.]
 
 - Copy and paste actions are completely disabled during the test
 - Tab switching is monitored
-- Users are allowed **only two violations**
-- Test is **automatically terminated** after exceeding the allowed attempts
-- Full-screen mode enforced during the test to maintain focus
+- Users are allowed only two violations
+- Test is automatically terminated after exceeding the allowed attempts
+- Full-screen mode is enforced during the test to maintain focus
 
 ---
 
@@ -59,7 +60,7 @@ Live URL: [Not deployed yet.]
 
 ### Additional Services
 - Email service for instant result delivery
-- Authentication & authorization
+- Authentication and authorization
 
 ---
 
@@ -83,6 +84,7 @@ Live URL: [Not deployed yet.]
 - Git
 
 ### Setup
+
 ```bash
 cd backend
 npm install
