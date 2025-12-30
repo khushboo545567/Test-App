@@ -1,0 +1,30 @@
+import mongoose from "mongoose";
+
+const questionSchema = mongoose.Schema(
+  {
+    testId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Test",
+      required: true,
+    },
+    question: {
+      type: String,
+      required: true,
+    },
+    options: {
+      type: [String],
+      required: true,
+    },
+    answer: {
+      type: String,
+      required: true,
+    },
+    detailAnswer: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+export const Questoin = mongoose.model("Question", questionSchema);
