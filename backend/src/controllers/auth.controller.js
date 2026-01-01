@@ -54,18 +54,21 @@ const register = asyncHandler(async (req, res) => {
 
 // LOGIN USER
 const login = asyncHandler(async (req, res) => {
-  const { userName, rollNo, password } = req.body;
-  if (!userName || !rollNo || !password) {
-    throw new ApiError(409, "All credentials are required");
+  const { rollNo, password } = req.body;
+  if (!rollNo || !password) {
+    throw new ApiError(400, "All credentials are required");
   }
   const isUserExists = await User.findOne({ rollNo });
   if (!isUserExists) {
-    throw new ApiError(409, "user does not exists");
+    throw new ApiError(404, "user does not exists");
   }
   // check if the password is correct or not
-  const isPasswordCorrect = bcrypt.compare(isUserExists.password, password);
+  const isPasswordCorrect = await bcrypt.compare(
+    password,
+    isUserExists.password
+  );
   if (!isPasswordCorrect) {
-    throw new ApiError(409, "invalid creadientals");
+    throw new ApiError(401, "Invalid credentials");
   }
   // generate token
   const token = jwt.sign(
@@ -73,13 +76,12 @@ const login = asyncHandler(async (req, res) => {
       id: isUserExists._id,
       role: isUserExists.role,
       userName: isUserExists.userName,
-      roll_no: isUserExists.rollNo,
     },
     process.env.JWT_SECRET,
     { expiresIn: "1d" }
   );
 
-  const Options = { httpOnly: true, secure: true };
+  const options = { httpOnly: true, secure: true };
   const user = {
     id: isUserExists._id,
     user_name: isUserExists.userName,
@@ -87,7 +89,7 @@ const login = asyncHandler(async (req, res) => {
   };
   return res
     .status(200)
-    .cookie("token", token, Options)
+    .cookie("token", token, options)
     .json(new ApiResponse(200, user, "logged in successfully !"));
 });
 
