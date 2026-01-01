@@ -18,7 +18,7 @@ const attemptSchema = mongoose.Schema(
     },
     testAttemptCount: {
       type: Number,
-      default: 1,
+      default: 0,
     },
     isDisqualified: {
       type: Boolean,
