@@ -10,13 +10,12 @@ const testSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    duration: {
+    durationInMinutes: {
       type: Number,
       required: true,
     },
     isActive: {
       type: Boolean,
-      required: true,
       default: false,
     },
   },

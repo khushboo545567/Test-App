@@ -27,4 +27,4 @@ const questionSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-export const Questoin = mongoose.model("Question", questionSchema);
+export const Question = mongoose.model("Question", questionSchema);
