@@ -73,22 +73,37 @@ const getQues = asyncHandler(async (req, res) => {
 // get the ques and ans for the user
 const getQuesAns = asyncHandler(async (req, res) => {
   const { testId } = req.params;
+  const userId = req.user.id;
 
   const questions = await Question.find({ testId });
-  const ansMarked = await submitAns.findById(testId);
-  const responseObj = {
-    question: questions.question,
-    options: questions.options,
-    answer: questions.answer,
-    detailAnswer: questions.detailAnswer,
-    markedAns: ansMarked.answer,
-    score: ansMarked.score,
-    startedAt: ansMarked.startedAt,
-    endAt: ansMarked.endAt,
-  };
+  if (questions.length === 0) {
+    throw new ApiError(404, "No questions found for this test");
+  }
+  const ansMarked = await submitAns.find({ testId, userId });
+  const answerMap = {};
+  submittedAnswers.forEach((ans) => {
+    answerMap[ans.questionId.toString()] = ans;
+  });
+
+  const response = questions.map((q) => {
+    const userAns = answerMap[q._id.toString()];
+
+    return {
+      questionId: q._id,
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.answer,
+      detailAnswer: q.detailAnswer,
+      markedAnswer: userAns?.answer || null,
+      score: userAns?.score || 0,
+      startedAt: userAns?.startedAt || null,
+      endedAt: userAns?.endedAt || null,
+    };
+  });
+
   return res
     .status(200)
-    .json(new ApiResponse(200, responseObj, "get you ques and ans "));
+    .json(new ApiResponse(200, response, "Questions and answers fetched"));
 });
 
 export { createQuestion, getQues, getQuesAns };
