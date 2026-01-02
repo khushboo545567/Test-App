@@ -30,4 +30,26 @@ const attempt = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, attemptCreate, "attempt model started"));
 });
 
-export { attempt };
+const checkAttemps = asyncHandler(async (req, res) => {
+  const { testId } = req.body;
+  const attemptFind = await Attempts.findById(testId);
+  if (!attemptFind) {
+    throw new ApiError(404, "attemps not found");
+  }
+  if (attemptFind.tabSwitchCount > 2) {
+    throw new ApiError(
+      400,
+      "test is terminated due to tab switching more than 2 times"
+    );
+  }
+  if (attempt.testAttemptCount > 1) {
+    throw new ApiError(
+      400,
+      "You are not allowed to take test more than one time"
+    );
+  }
+
+  return res.status(200).json(new ApiResponse(200, "test attempt passed"));
+});
+
+export { attempt, checkAttemps };
