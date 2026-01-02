@@ -30,26 +30,47 @@ const attempt = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, attemptCreate, "attempt model started"));
 });
 
-const checkAttemps = asyncHandler(async (req, res) => {
+const checkAttempts = asyncHandler(async (req, res) => {
   const { testId } = req.body;
-  const attemptFind = await Attempts.findById(testId);
-  if (!attemptFind) {
-    throw new ApiError(404, "attemps not found");
+  const userId = req.user.id;
+
+  // Find attempt for this user & test
+  const attempt = await Attempts.findOne({ userId, testId });
+
+  if (!attempt) {
+    throw new ApiError(404, "Attempt record not found");
   }
-  if (attemptFind.tabSwitchCount > 2) {
+
+  // Check tab switching rule
+  if (attempt.tabSwitchCount > 2) {
     throw new ApiError(
       400,
-      "test is terminated due to tab switching more than 2 times"
-    );
-  }
-  if (attempt.testAttemptCount > 1) {
-    throw new ApiError(
-      400,
-      "You are not allowed to take test more than one time"
+      "Test is terminated due to tab switching more than 2 times"
     );
   }
 
-  return res.status(200).json(new ApiResponse(200, "test attempt passed"));
+  // Check attempt count rule
+  if (attempt.testAttemptCount >= 1) {
+    throw new ApiError(
+      400,
+      "You are not allowed to take the test more than once"
+    );
+  }
+
+  // Check disqualification
+  if (attempt.isDisqualified) {
+    throw new ApiError(400, "You are disqualified from this test");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Test attempt allowed"));
 });
 
-export { attempt, checkAttemps };
+// increment tab switch count on switching
+const tabSwitchCount = asyncHandler(async (req, res) => {
+  // increment the tab switch count ,
+  // if that is =2 then set true to isDisqualified
+});
+
+export { attempt, checkAttempts };
