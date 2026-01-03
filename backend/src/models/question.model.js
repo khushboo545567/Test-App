@@ -23,6 +23,10 @@ const questionSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    mark: {
+      type: Number,
+      default: 1,
+    },
   },
   { timestamps: true }
 );

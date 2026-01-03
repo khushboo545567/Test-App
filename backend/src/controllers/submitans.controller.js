@@ -4,6 +4,7 @@ import ApiResponse from "../utils/apiResponse.js";
 import { Test } from "../models/test.model.js";
 import { Attempts } from "../models/attempts.model.js";
 import SubmittedAnswer from "../models/submittedans.model.js";
+import { Question } from "../models/question.model.js";
 
 const submitAns = asyncHandler(async (req, res) => {
   const userId = req.user.id;
@@ -49,6 +50,33 @@ const submitAns = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(new ApiResponse(201, submission, "Test submitted successfully"));
+
+  calculateResultAndNotify(userId, testId);
 });
 
+// USE JOB QUEUE FOR BOTH RESULT CALCULATION AND THE SEND MAIL
+
+const calculateResultAndNotify = async (userId, testId) => {
+  const submission = await SubmittedAnswer.findOne({ userId, testId });
+
+  const questions = await Question.find({ testId });
+
+  let totalScore = 0;
+
+  submission.answers.forEach((ans) => {
+    const question = questions.find(
+      (q) => q._id.toString() === ans.questionId.toString()
+    );
+
+    if (question && question.answer === ans.answer) {
+      ans.score = question.mark || 1;
+      totalScore += ans.score;
+    }
+  });
+
+  submission.totalScore = totalScore;
+  await submission.save();
+
+  // send email
+};
 export { submitAns };
