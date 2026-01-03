@@ -3,8 +3,6 @@ import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { Question } from "../models/question.model.js";
 import { Test } from "../models/test.model.js";
-import { Attempts } from "../models/attempts.model.js";
-import { submitAns } from "./submitans.controller.js";
 
 const createQuestion = asyncHandler(async (req, res) => {
   const { testId } = req.params;
@@ -70,21 +68,34 @@ const getQues = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, questions, "Questions fetched successfully"));
 });
 
-// get the ques and ans for the user
+// fetch the qes and ans for the user to analysis the result
 const getQuesAns = asyncHandler(async (req, res) => {
   const { testId } = req.params;
-  const userId = req.user.id;
+  const userId = req.user._id;
 
+  // Get questions
   const questions = await Question.find({ testId });
-  if (questions.length === 0) {
+
+  if (!questions || questions.length === 0) {
     throw new ApiError(404, "No questions found for this test");
   }
-  const ansMarked = await submitAns.find({ testId, userId });
-  const answerMap = {};
-  submittedAnswers.forEach((ans) => {
-    answerMap[ans.questionId.toString()] = ans;
+
+  //  Get user's submitted answers (single document)
+  const submission = await SubmittedAnswer.findOne({
+    testId,
+    userId,
   });
 
+  //  Create answer map
+  const answerMap = {};
+
+  if (submission) {
+    submission.answers.forEach((ans) => {
+      answerMap[ans.questionId.toString()] = ans;
+    });
+  }
+
+  //  Merge question + user answer
   const response = questions.map((q) => {
     const userAns = answerMap[q._id.toString()];
 
@@ -92,18 +103,18 @@ const getQuesAns = asyncHandler(async (req, res) => {
       questionId: q._id,
       question: q.question,
       options: q.options,
-      correctAnswer: q.answer,
-      detailAnswer: q.detailAnswer,
+
+      correctAnswer: submission ? q.answer : null,
+      detailAnswer: submission ? q.detailAnswer : null,
+
       markedAnswer: userAns?.answer || null,
       score: userAns?.score || 0,
-      startedAt: userAns?.startedAt || null,
-      endedAt: userAns?.endedAt || null,
     };
   });
 
   return res
     .status(200)
-    .json(new ApiResponse(200, response, "Questions and answers fetched"));
+    .json(new ApiResponse(200, response, "Questions fetched successfully"));
 });
 
 export { createQuestion, getQues, getQuesAns };

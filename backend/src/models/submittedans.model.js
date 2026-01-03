@@ -12,16 +12,24 @@ const submittedAnswerSchema = new mongoose.Schema(
       ref: "Test",
       required: true,
     },
-    questionId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Question",
-      required: true,
-    },
-    answer: {
-      type: String,
-      default: null,
-    },
-    score: {
+    answers: [
+      {
+        questionId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Question",
+          required: true,
+        },
+        answer: {
+          type: String,
+          required: true,
+        },
+        score: {
+          type: Number,
+          default: 0,
+        },
+      },
+    ],
+    totalScore: {
       type: Number,
       default: 0,
     },
@@ -40,4 +48,5 @@ const SubmittedAnswer = mongoose.model(
   "SubmittedAnswer",
   submittedAnswerSchema
 );
+
 export default SubmittedAnswer;
