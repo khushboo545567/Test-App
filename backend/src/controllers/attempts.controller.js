@@ -67,10 +67,29 @@ const checkAttempts = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Test attempt allowed"));
 });
 
-// increment tab switch count on switching
-const tabSwitchCount = asyncHandler(async (req, res) => {
-  // increment the tab switch count ,
-  // if that is =2 then set true to isDisqualified
+const incrementTabSwitchCount = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { testId } = req.params;
+
+  const attempt = await Attempts.findOne({ userId, testId });
+
+  if (!attempt) {
+    throw new ApiError(404, "Test attempt not found");
+  }
+
+  attempt.tabSwitchCount += 1;
+
+  if (attempt.tabSwitchCount >= 2) {
+    attempt.isDisqualified = true;
+  }
+
+  await attempt.save();
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, attempt, "Tab switch count updated successfully")
+    );
 });
 
-export { attempt, checkAttempts };
+export { attempt, checkAttempts, incrementTabSwitchCount };
