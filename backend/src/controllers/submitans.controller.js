@@ -21,6 +21,7 @@ const submitAns = asyncHandler(async (req, res) => {
   }
 
   // check if the student submitted the answer already
+
   const alreadySubmitted = await SubmittedAnswer.findOne({
     userId,
     testId,
@@ -55,6 +56,10 @@ const submitAns = asyncHandler(async (req, res) => {
 });
 
 // USE JOB QUEUE FOR BOTH RESULT CALCULATION AND THE SEND MAIL
+// Fetch questions
+// Calculate score
+// Update DB
+// Send mail
 
 const calculateResultAndNotify = async (userId, testId) => {
   const submission = await SubmittedAnswer.findOne({ userId, testId });
