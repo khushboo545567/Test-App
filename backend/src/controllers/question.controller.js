@@ -73,7 +73,6 @@ const getQues = asyncHandler(async (req, res) => {
 const getQuesAns = asyncHandler(async (req, res) => {
   const { testId } = req.params;
   const userId = req.user._id;
-
   // Get questions
   const questions = await Question.find({ testId });
 
@@ -86,6 +85,7 @@ const getQuesAns = asyncHandler(async (req, res) => {
     testId,
     userId,
   });
+  console.log(submission);
 
   //  Create answer map
   const answerMap = {};
