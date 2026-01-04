@@ -1,6 +1,6 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import ApiError from "../utils/apiError.js";
-import ApiResponse from "../utils/apiResponse.js";
+import { ApiError } from "../utils/apiError.js";
+import { ApiResponse } from "../utils/apiResponse.js";
 import { Test } from "../models/test.model.js";
 import { Attempts } from "../models/attempts.model.js";
 
@@ -15,13 +15,12 @@ const createTest = asyncHandler(async (req, res) => {
     throw new ApiError(400, "can not create the test with this  title");
   }
 
-  const test = new Test.create({
+  const test = await Test.create({
     title,
     description,
     durationInMinutes,
   });
 
-  await test.save();
   return res
     .status(201)
     .json(new ApiResponse(201, test, "test created successfully !"));

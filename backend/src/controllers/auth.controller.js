@@ -1,6 +1,6 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import ApiError from "../utils/apiError.js";
-import ApiResponse from "../utils/apiResponse.js";
+import { ApiError } from "../utils/apiError.js";
+import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -59,6 +59,7 @@ const login = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All credentials are required");
   }
   const isUserExists = await User.findOne({ rollNo });
+
   if (!isUserExists) {
     throw new ApiError(404, "user does not exists");
   }
@@ -86,6 +87,7 @@ const login = asyncHandler(async (req, res) => {
     id: isUserExists._id,
     user_name: isUserExists.userName,
     role: isUserExists.role,
+    accessToken: token,
   };
   return res
     .status(200)
