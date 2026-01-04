@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import authroute from "./routes/auth.routes.js";
 import testroute from "./routes/test.route.js";
 import quesRoute from "./routes/question.route.js";
+import attemptTest from "./routes/attempts.route.js";
 
 const app = express();
 app.use(express.json());
@@ -23,5 +24,6 @@ app.use(
 app.use("/api/v1/auth/user", authroute);
 app.use("/api/v1/test/admin", testroute);
 app.use("/api/v1/question/admin", quesRoute);
+app.use("/api/v1/attemp/user", attemptTest);
 
 export default app;
