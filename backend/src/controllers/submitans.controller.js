@@ -51,8 +51,6 @@ const submitAns = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(new ApiResponse(201, submission, "Test submitted successfully"));
-
-  calculateResultAndNotify(userId, testId);
 });
 
 // USE JOB QUEUE FOR BOTH RESULT CALCULATION AND THE SEND MAIL
