@@ -1,10 +1,8 @@
 import Queue from "bull";
+import { redisConfig } from "../config/redis.js";
 
 const resultQueue = new Queue("result-queue", {
-  redis: {
-    host: "127.0.0.1",
-    port: 6379,
-  },
+  redis: redisConfig,
 });
 
 export default resultQueue;

@@ -4,7 +4,7 @@ import ApiResponse from "../utils/apiResponse.js";
 import { Test } from "../models/test.model.js";
 import { Attempts } from "../models/attempts.model.js";
 import SubmittedAnswer from "../models/submittedans.model.js";
-import { Question } from "../models/question.model.js";
+import resultQueue from "../queue/result.queue.js";
 
 const submitAns = asyncHandler(async (req, res) => {
   const userId = req.user.id;
@@ -45,6 +45,13 @@ const submitAns = asyncHandler(async (req, res) => {
     endedAt: new Date(),
   });
 
+  // result queue add
+  await resultQueue.add("calculate-result", {
+    userId,
+    testId,
+    submissionId: submission._id,
+  });
+
   attempt.testAttemptCount += 1;
   await attempt.save();
 
@@ -53,33 +60,4 @@ const submitAns = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, submission, "Test submitted successfully"));
 });
 
-// USE JOB QUEUE FOR BOTH RESULT CALCULATION AND THE SEND MAIL
-// Fetch questions
-// Calculate score
-// Update DB
-// Send mail
-
-const calculateResultAndNotify = async (userId, testId) => {
-  const submission = await SubmittedAnswer.findOne({ userId, testId });
-
-  const questions = await Question.find({ testId });
-
-  let totalScore = 0;
-
-  submission.answers.forEach((ans) => {
-    const question = questions.find(
-      (q) => q._id.toString() === ans.questionId.toString()
-    );
-
-    if (question && question.answer === ans.answer) {
-      ans.score = question.mark || 1;
-      totalScore += ans.score;
-    }
-  });
-
-  submission.totalScore = totalScore;
-  await submission.save();
-
-  // send email
-};
 export { submitAns };
