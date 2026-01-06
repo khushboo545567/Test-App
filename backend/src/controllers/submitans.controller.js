@@ -1,6 +1,6 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import ApiError from "../utils/apiError.js";
-import ApiResponse from "../utils/apiResponse.js";
+import { ApiError } from "../utils/apiError.js";
+import { ApiResponse } from "../utils/apiResponse.js";
 import { Test } from "../models/test.model.js";
 import { Attempts } from "../models/attempts.model.js";
 import SubmittedAnswer from "../models/submittedans.model.js";
@@ -32,6 +32,7 @@ const submitAns = asyncHandler(async (req, res) => {
   }
 
   const attempt = await Attempts.findOne({ userId, testId });
+  console.log(attempt);
 
   if (attempt?.isDisqualified) {
     throw new ApiError(403, "You are disqualified from this test");

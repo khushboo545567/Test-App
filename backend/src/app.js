@@ -5,6 +5,7 @@ import authroute from "./routes/auth.routes.js";
 import testroute from "./routes/test.route.js";
 import quesRoute from "./routes/question.route.js";
 import attemptTest from "./routes/attempts.route.js";
+import submitans from "./routes/submitans.route.js";
 
 const app = express();
 app.use(express.json());
@@ -25,5 +26,6 @@ app.use("/api/v1/auth/user", authroute);
 app.use("/api/v1/test/admin", testroute);
 app.use("/api/v1/question/admin", quesRoute);
 app.use("/api/v1/attemp/user", attemptTest);
+app.use("/api/v1/submitans/user", submitans);
 
 export default app;
