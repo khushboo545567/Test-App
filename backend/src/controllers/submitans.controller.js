@@ -46,11 +46,14 @@ const submitAns = asyncHandler(async (req, res) => {
   });
 
   // result queue add
-  await resultQueue.add("calculate-result", {
-    userId,
-    testId,
-    submissionId: submission._id,
-  });
+  await resultQueue.add(
+    "calculate-result",
+    { userId, testId, submissionId: submission._id },
+    {
+      attempts: 3,
+      backoff: 5000,
+    }
+  );
 
   attempt.testAttemptCount += 1;
   await attempt.save();

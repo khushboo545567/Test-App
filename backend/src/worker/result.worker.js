@@ -1,4 +1,4 @@
-import resultQueue from "../queue/result.queue";
+import resultQueue from "../queue/result.queue.js";
 import SubmittedAnswer from "../models/submittedans.model.js";
 import { Question } from "../models/question.model.js";
 import sendResultMail from "../utils/mail.js";
@@ -10,8 +10,11 @@ resultQueue.process(async (job) => {
 
     console.log("Processing result for:", userId, testId);
     const user = await User.findById(userId);
+
     // const submission = await SubmittedAnswer.findOne({ userId, testId });
+
     const submission = await SubmittedAnswer.findById(submissionId);
+
     if (!submission) throw new Error("Submission not found");
 
     const questions = await Question.find({ testId });
@@ -46,9 +49,3 @@ resultQueue.process(async (job) => {
     throw error;
   }
 });
-
-await resultQueue.add(
-  "calculate-result",
-  { userId, testId, submissionId: submission._id },
-  { attempts: 3, backoff: 5000 }
-);

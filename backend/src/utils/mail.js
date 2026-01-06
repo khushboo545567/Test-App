@@ -1,4 +1,4 @@
-import transportor from "../config/mail.config";
+import transportor from "../config/mail.config.js";
 import dotenv from "dotenv";
 dotenv.config();
 

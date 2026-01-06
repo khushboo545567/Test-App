@@ -1,5 +1,5 @@
 import Queue from "bull";
-import { redisConfig } from "../config/redis.js";
+import { redisConfig } from "../config/radis.js";
 
 const resultQueue = new Queue("result-queue", {
   redis: redisConfig,
