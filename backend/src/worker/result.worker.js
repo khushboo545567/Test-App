@@ -1,12 +1,18 @@
+// MongoDB connection needed to run worker || worker must open its own DB connection.
+import connectDB from "../config/db.js";
 import resultQueue from "../queue/result.queue.js";
 import SubmittedAnswer from "../models/submittedans.model.js";
 import { Question } from "../models/question.model.js";
 import sendResultMail from "../utils/mail.js";
 import { User } from "../models/user.model.js";
 
+// 🔥 CONNECT DB FIRST
+await connectDB();
+
 resultQueue.process(async (job) => {
   try {
     const { userId, testId, submissionId } = job.data;
+    console.log("User model test:", await User.findOne());
 
     console.log("Processing result for:", userId, testId);
     const user = await User.findById(userId);
@@ -49,3 +55,5 @@ resultQueue.process(async (job) => {
     throw error;
   }
 });
+
+console.log("🚀 Result Worker running...");

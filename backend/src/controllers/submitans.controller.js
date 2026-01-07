@@ -32,7 +32,6 @@ const submitAns = asyncHandler(async (req, res) => {
   }
 
   const attempt = await Attempts.findOne({ userId, testId });
-  console.log(attempt);
 
   if (attempt?.isDisqualified) {
     throw new ApiError(403, "You are disqualified from this test");
@@ -48,7 +47,6 @@ const submitAns = asyncHandler(async (req, res) => {
 
   // result queue add
   await resultQueue.add(
-    "calculate-result",
     { userId, testId, submissionId: submission._id },
     {
       attempts: 3,
