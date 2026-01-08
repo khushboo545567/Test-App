@@ -1,7 +1,7 @@
-function App() {
+export default function App() {
   return (
-    <h1 class="text-3xl font-bold text-red-500 underline"> Hello world! </h1>
+    <div className="h-screen bg-primary flex items-center justify-center">
+      <h1 className="text-red-400 text-3xl">PRIMARY WORKS</h1>
+    </div>
   );
 }
-
-export default App;
