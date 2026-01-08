@@ -1,7 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.jsx";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -21,7 +20,7 @@ const router = createBrowserRouter(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/register" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/test" element={<Test />} />
       </Routes>
