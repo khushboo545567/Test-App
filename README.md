@@ -44,6 +44,70 @@ Live URL: Not deployed yet.
 
 ---
 
+## Background Job Queue Implementation
+
+To ensure fast API responses and better scalability, Testify uses a background job queue for result calculation and email notifications.
+
+### Why Job Queue?
+-Test submission response is sent instantly to the user
+-Heavy tasks like result calculation and email sending run in the background
+-Improves application performance and user experience
+-Supports automatic retry on failures
+
+### Job Queue Architecture
+-Redis (Memurai) is used as the message broker
+-Bull is used for job queue management
+-A separate worker process handles background jobs independently
+
+### Redis Setup (Windows)
+-Memurai is used as Redis for Windows
+-Memurai runs as a background service
+-Redis connection is established using Memurai’s default port
+
+### Queue Responsibilities
+The job queue handles the following tasks:
+
+-Fetching submitted answers
+-Calculating test scores
+-Updating results in MongoDB
+-Sending result emails to users
+
+### Worker Process
+-Worker runs separately from the main Express server
+-Worker has its own MongoDB connection
+-Worker listens to the Redis queue and processes jobs
+-Failed jobs are retried automatically
+
+### Job Retry Strategy
+-Each job has a retry limit of 3 attempts
+-Retry delay is applied in case of temporary failures
+-Ensures reliable email delivery and result processing
+
+--
+
+## Test Flow
+
+1. User logs in and starts the test
+
+2. Test opens in full-screen mode
+
+3. Anti-cheating rules are enforced throughout the test
+
+4. User submits the test
+
+5. Submission is saved immediately
+
+6. Job is added to the Redis queue
+
+7. Worker calculates the result in the background
+
+8. Result is emailed to the user
+
+9. User can view detailed answers after completion
+
+
+--
+
 ## Tech Stack
 
 ### Frontend
@@ -59,20 +123,11 @@ Live URL: Not deployed yet.
 - MongoDB
 
 ### Additional Services
-- Email service for instant result delivery
-- Authentication and authorization
+-Redis (Memurai)
+-Bull Queue
+-Email service
+-Authentication and Authorization
 
----
-
-## Test Flow
-
-1. User logs in and starts the test
-2. Test opens in full-screen mode
-3. Anti-cheating rules are enforced throughout the test
-4. User submits the test
-5. Score is calculated instantly
-6. Result is sent to the user via email
-7. User can view detailed answers
 
 ---
 
