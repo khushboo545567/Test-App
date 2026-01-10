@@ -1,83 +1,95 @@
-# 📝 Testify
+# Testify
 
-**Testify** is a robust, full-stack online examination platform designed to conduct secure, scalable, and seamless tests. It features strict anti-cheating mechanisms and an asynchronous architecture using background job queues to ensure high performance during peak loads.
-
----
-
-## 🚀 Project Overview
-
-Testify bridges the gap between educators and students by providing a controlled environment for online assessments. Administrators can easily manage test sets, while students take exams in a locked-down interface.
-
-To ensure the system remains responsive even when hundreds of users submit tests simultaneously, Testify leverages **Redis** and **Bull Queue** to handle result calculation and email delivery in the background.
-
-### 🌟 Key Features
-
-#### 🛡️ For Students (Secure Environment)
-* **Full-Screen Enforcement:** The test interface forces full-screen mode to minimize distractions.
-* **Anti-Cheating System:**
-    * **Copy-Paste Disabled:** Clipboard actions are blocked.
-    * **Tab-Switch Detection:** The system monitors focus. Switching tabs triggers a warning.
-    * **Auto-Termination:** Exceeding the maximum allowed violations (2 attempts) automatically submits and terminates the test.
-* **Instant Feedback:** Scores are emailed immediately upon completion.
-* **Detailed Analysis:** Users can view correct answers and explanations after the test.
-
-#### 👨‍💻 For Administrators
-* **Dashboard:** specialized admin panel for platform management.
-* **Test Management:** Create, edit, and delete MCQ-based tests.
-* **Configuration:** Control test duration, passing criteria, and question sets.
+Testify is a full-stack online testing platform that helps educators create and manage multiple tests. It prevents copy-paste and tab switching during exams and sends results instantly to users via email.
 
 ---
 
-## 🏗️ Architecture & Performance
+## Project Overview
 
-Testify is built for scale. Instead of making the user wait for the server to calculate scores and send emails, we use an **Event-Driven Architecture**.
-
-### Why a Job Queue?
-Processing a test submission involves:
-1.  Fetching answers from the database.
-2.  Comparing user inputs vs. correct answers.
-3.  Calculating the score.
-4.  Updating the user's history in MongoDB.
-5.  Sending an email notification.
-
-Doing this synchronously would slow down the API. By offloading these tasks to a **Background Worker**, the API responds instantly, and the heavy lifting happens asynchronously.
-
-### The Flow
-1.  **Submission:** User clicks submit → API acknowledges immediately.
-2.  **Queue:** The job is pushed to **Redis**.
-3.  **Worker:** A dedicated worker process (Bull) picks up the job.
-4.  **Processing:** The worker calculates the result and updates MongoDB.
-5.  **Notification:** The worker triggers the email service.
-6.  **Reliability:** Failed jobs are automatically retried up to 3 times.
+Testify allows administrators to create and manage multiple tests through an admin dashboard. Users can attempt tests in a controlled environment where anti-cheating measures are applied. After completing a test, users immediately receive their score via email and can also view detailed answers for self-evaluation.
 
 ---
 
-## 🛠️ Tech Stack
+## Live Demo
 
-| Component | Technology |
-| :--- | :--- |
-| **Frontend** | React.js, Tailwind CSS |
-| **Backend** | Node.js, Express.js |
-| **Database** | MongoDB |
-| **Message Broker** | Redis (Memurai for Windows dev) |
-| **Queue Management** | Bull |
-| **Email Service** | Nodemailer / SMTP |
+Live URL: Not deployed yet.
 
 ---
 
-## ⚙️ Installation & Setup
+## Key Features
 
-Follow these steps to run the project locally.
+### User Features
+- Attempt MCQ-based tests
+- Full-screen enforced test environment
+- Copy-paste prevention during the test
+- Tab-switch detection with limited attempts
+- Automatic test termination after exceeding allowed violations
+- Instant score delivery via email
+- View detailed answers after test completion
+
+### Admin Features
+- Admin dashboard to manage the platform
+- Create and manage multiple tests
+- Control test duration and question sets
+
+---
+
+## Anti-Cheating Mechanisms
+
+- Copy and paste actions are completely disabled during the test
+- Tab switching is monitored
+- Users are allowed only two violations
+- Test is automatically terminated after exceeding the allowed attempts
+- Full-screen mode is enforced during the test to maintain focus
+
+---
+
+## Tech Stack
+
+### Frontend
+- React.js
+- JavaScript
+- Tailwind CSS
+
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- MongoDB
+
+### Additional Services
+- Email service for instant result delivery
+- Authentication and authorization
+
+---
+
+## Test Flow
+
+1. User logs in and starts the test
+2. Test opens in full-screen mode
+3. Anti-cheating rules are enforced throughout the test
+4. User submits the test
+5. Score is calculated instantly
+6. Result is sent to the user via email
+7. User can view detailed answers
+
+---
+
+## How to Run the Project Locally
 
 ### Prerequisites
-* [Node.js](https://nodejs.org/)
-* [MongoDB](https://www.mongodb.com/) (Local or Atlas)
-* [Git](https://git-scm.com/)
-* **Redis:**
-    * *Mac/Linux:* Install standard Redis.
-    * *Windows:* Install [Memurai](https://www.memurai.com/) (Developer edition).
+- Node.js
+- MongoDB
+- Git
 
-### 1. Clone the Repository
+### Setup
+
 ```bash
-git clone [https://github.com/your-username/testify.git](https://github.com/your-username/testify.git)
-cd testify
+cd backend
+npm install
+npm start
+
+cd frontend
+npm install
+npm run dev
